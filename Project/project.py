@@ -3,7 +3,7 @@ import pandas as pd
 
 if __name__ == '__main__':
     # Load Original Data
-    url = 'https://raw.githubusercontent.com/Follyboy/USA_Aviation_Accident_Analysis/main/Project/AviationData.csv'
+    url = 'https://raw.githubusercontent.com/Follyboy/Aviation_Accident_Analysis/main/Project/AviationData.csv'
     df = pd.read_csv(url, sep=",", encoding='cp1252', dtype='unicode')
     print(df.head())
 
