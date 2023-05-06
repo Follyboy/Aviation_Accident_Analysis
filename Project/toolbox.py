@@ -1,5 +1,37 @@
+import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+from scipy.stats import normaltest
+
+
+def calc_zscore(df, field=''):
+    # select the column to detect outliers in
+    col = df[field]
+
+    # calculate the Z-score for each data point in the column
+    z_scores = (col - np.mean(col)) / np.std(col)
+
+    # define the threshold for outliers (Z-score > 3)
+    threshold = 3
+
+    # detect outliers using boolean indexing
+    outliers = df[z_scores > threshold]
+
+    # print the outliers
+    print(f'Number of outliers for {field} is {len(outliers)}')
+
+
+def da_k_squared_test(x, title):
+    stats, p = normaltest(x)
+    print('=' * 50)
+    print(f'da_k_squared test: {title} dataset: statistics= {stats:.2f} p-value = {p:.2f}')
+
+    alpha = 0.05 / len(x)
+    if p > alpha:
+        print(f'da_k_squared test:  {title} dataset looks Normal')
+    else:
+        print(f'da_k_squared test : {title} dataset does not look Normal')
+    print('=' * 50)
 
 
 class Toolbox:
