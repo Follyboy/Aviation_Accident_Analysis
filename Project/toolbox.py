@@ -37,6 +37,35 @@ def da_k_squared_test(x, title):
     print('=' * 50)
 
 
+def create_sub_line(df=[], field='', u=[], rows=3, cols=2, title='', fig_x=12, fig_y=8):
+    # Create a row by col grid of subplots
+    fig, axs = plt.subplots(rows, cols, figsize=(fig_x, fig_y))
+
+    # Plot line graphs for each value in the subplots
+    for i, value in enumerate(u):
+        row = i // 2
+        col = i % 2
+        data = df[df[field] == value]
+        grouped = data.groupby([field, 'Year']).size().reset_index(name='Count')
+        if rows == 1:
+            axs[col].plot(grouped['Year'], grouped['Count'])
+            axs[col].set_title(value)
+            axs[col].set_xlabel('Year')
+            axs[col].set_ylabel('Count')
+            axs[col].grid()
+        else:
+            axs[row, col].plot(grouped['Year'], grouped['Count'])
+            axs[row, col].set_title(value)
+            axs[row, col].set_xlabel('Year')
+            axs[row, col].set_ylabel('Count')
+            axs[row, col].grid()
+
+    # Display the plot
+    fig.suptitle(title)
+    plt.tight_layout()
+    plt.show()
+
+
 class Toolbox:
     def __init__(self, df=[], length=0, fig_size_x=16, fig_size_y=8):
         self.df = df
@@ -245,7 +274,7 @@ class Toolbox:
             plt.tight_layout()
             plt.show()
         else:
-            sns.kdeplot(data=df, x=field_x, y=field_y, hue=hue, fill=fill)
+            sns.kdeplot(data=df, x=field_x, y=field_y, hue=hue, fill=fill, warn_singular=False)
 
             # Set the plot title and axis labels
             plt.title(title)
