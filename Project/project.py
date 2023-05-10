@@ -4,7 +4,7 @@ import seaborn as sns
 from matplotlib import pyplot as plt
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
-from toolbox import calc_zscore, da_k_squared_test, Toolbox
+from toolbox import calc_zscore, da_k_squared_test, Toolbox, create_sub_line
 
 if __name__ == '__main__':
     # Load Original Data
@@ -135,7 +135,6 @@ if __name__ == '__main__':
     #################################################
     new_df = df_.reset_index(drop=True)
     new_df.to_csv('cleaned_dataframe.csv', index=False)
-    # new_df = new_df[new_df['Number_of_passengers'] <= 10]
 
     ########################################
     # OUTLIER DETECTION AND REMOVAL
@@ -145,10 +144,6 @@ if __name__ == '__main__':
     calc_zscore(new_df, 'Total_Serious_Injuries')
     calc_zscore(new_df, 'Total_Minor_Injuries')
     calc_zscore(new_df, 'Total_Uninjured')
-    # d1 = calc_zscore(new_df, 'Total_Fatal_Injuries')
-    # d2 = calc_zscore(d1, 'Total_Serious_Injuries')
-    # d3 = calc_zscore(d2, 'Total_Minor_Injuries')
-    # new_df = calc_zscore(d3, 'Total_Uninjured')
     print('=========================================================')
     print('=========================================================')
     print(
@@ -162,7 +157,7 @@ if __name__ == '__main__':
     ########################################
     # PCA ANALYSIS
     ########################################
-    num_cols = ['Total_Fatal_Injuries', 'Total_Serious_Injuries', 'Total_Minor_Injuries', 'Total_Uninjured']
+    num_cols = ['Year', 'Total_Fatal_Injuries', 'Total_Serious_Injuries', 'Total_Minor_Injuries', 'Total_Uninjured', 'Number_of_passengers']
     X = new_df[num_cols].values
 
     # Standardize the data
@@ -246,6 +241,11 @@ if __name__ == '__main__':
     # Display summary statistics for numeric columns
     print(new_df.describe())
 
+    skewness = new_df.skew(numeric_only=True)
+    print('=' * 20 + 'SKEWNESS' + '=' * 20)
+    print(skewness)
+    print('=' * 48)
+
     ##############################
     # LINE PLOTS
     ##############################
@@ -260,7 +260,7 @@ if __name__ == '__main__':
     # LINE PLOT FOR CRASHES VS YEAR BY COUNTRY
     ############################################
     tool_ = Toolbox(df=new_df)
-    tool_.create_line_plot(field=['Country', 'Year'], title='Number of Aviation Accidents by Country',
+    tool_.create_line_plot(field=['Country', 'Year'], title='Number of Aviation Accidents of top 10 Countries',
                            x_label='Year', y_label='Number of Accidents', head=True, head_c=10)
 
     ####################################################
@@ -320,12 +320,12 @@ if __name__ == '__main__':
     num_accidents_no = len(no_df)
     tool_bar.create_bar(title='Number of Amateur-Built Aircraft', x=['Yes', 'No'],
                         y=[num_accidents_yes, num_accidents_no],
-                        x_label='Amateur Built', y_label='Number of Aircraft')
+                        x_label='Amateur Built', y_label='Number of Crashes')
 
     ####################################################
     # BAR PLOT FOR CRASHES AND THEIR ENGINE TYPES
     ####################################################
-    # group the dataframe by year and 'Amateur_Built' column, and count the number of accidents in each group
+    # group the dataframe by year and 'Engine_Type' column, and count the number of accidents in each group
     count_et = new_df.groupby(['Year', 'Engine_Type']).size().unstack()
 
     tool_bar.create_bar(df=count_et, stacked=True, df_plot=True, title='Number of Accidents by Year and Engine Types',
@@ -343,7 +343,30 @@ if __name__ == '__main__':
 
     tool_bar.create_bar(title='Number of Engine Types', x=et_unique,
                         y=col_count_et,
-                        x_label='Engine Types', y_label='Number of Aircraft', rotate_x=True)
+                        x_label='Engine Types', y_label='Number of Crashes', rotate_x=True)
+
+    ###################################################
+    # BAR PLOT FOR CRASHES AND WEATHER CONDITION
+    ###################################################
+    # group the dataframe by year and 'Weather_Condition' column, and count the number of accidents in each group
+    count_weather = new_df.groupby(['Year', 'Weather_Condition']).size().unstack()
+
+    tool_bar.create_bar(df=count_weather, stacked=True, df_plot=True, title='Number of Accidents by Year and Weather Condition',
+                        x_label='Year', y_label='Number of Accidents')
+
+    ###################################################
+    # BAR PLOT FOR WEATHER CONDITION
+    ###################################################
+    weather_unique = new_df['Weather_Condition'].unique()
+    col_count_weather = []
+    for i in weather_unique:
+        df_weather = new_df[new_df['Weather_Condition'] == i]
+        length = len(df_weather)
+        col_count_weather.append(length)
+
+    tool_bar.create_bar(title='Number of Weather Conditions', x=weather_unique,
+                        y=col_count_weather,
+                        x_label='Weather Condition', y_label='Number of Crashes', rotate_x=True)
 
     ##############################
     # COUNT PLOTS
@@ -353,6 +376,9 @@ if __name__ == '__main__':
     #####################################################################
     tool_count = Toolbox(df=new_df)
     tool_count.create_countplot(field='Injury_Severity', title='Number of Injury Severity with Weather Conditions',
+                                style='darkgrid', hue='Weather_Condition')
+
+    tool_count.create_countplot(field='Day', title='Number of Crashes on Days with Weather Conditions',
                                 style='darkgrid', hue='Weather_Condition')
 
     ##############################
@@ -371,11 +397,11 @@ if __name__ == '__main__':
     #######################################
     explode = 0.01
     tool_pie = Toolbox(df=new_df)
-    tool_pie.create_pie_count(field='Day', explode=explode, num=True, title='Accidents across days')
+    tool_pie.create_pie_count(field='Day', explode=explode, num=False, title='Accidents across days')
     #######################################
     # PIE CHART OF MONTH ACCIDENTS OCCUR
     #######################################
-    tool_pie.create_pie_count(field='Month', explode=explode, num=True, title='Accidents across months')
+    tool_pie.create_pie_count(field='Month', explode=explode, num=False, title='Accidents across months')
 
     ##############################
     # DISPLOT
@@ -449,9 +475,9 @@ if __name__ == '__main__':
                                 hue='Weather_Condition',
                                 kind='kde')
 
-    # ##############################
-    # # PAIR PLOT
-    # ##############################
+    ##############################
+    # PAIR PLOT
+    ##############################
     sns.pairplot(new_df[num_cols])
     plt.show()
 
@@ -479,19 +505,19 @@ if __name__ == '__main__':
     ################################################################
     # KDE PLOT FOR COMMERCIAL PLANE CRASH FOR TOTAL FATAL INJURIES
     ################################################################
-    tool_kde_comm.create_kdeplot(field_y='Total_Fatal_Injuries', field_x='Year', style='darkgrid',
+    tool_kde_comm.create_kdeplot(field_y='Total_Fatal_Injuries', field_x='Year', style='darkgrid', hue='Amateur_Built',
                                  title='COMMERCIAL PLANE CRASH FOR TOTAL FATAL INJURIES')
 
     ################################################################
     # KDE PLOT FOR CHARTERED PLANE CRASH FOR TOTAL FATAL INJURIES
     ################################################################
-    tool_kde_char.create_kdeplot(field_y='Total_Fatal_Injuries', field_x='Year', style='darkgrid',
+    tool_kde_char.create_kdeplot(field_y='Total_Fatal_Injuries', field_x='Year', style='darkgrid', hue='Amateur_Built',
                                  title='CHARTERED PLANE CRASH FOR TOTAL FATAL INJURIES')
 
     ################################################################
     # KDE PLOT FOR PRIVATE PLANE CRASH FOR TOTAL FATAL INJURIES
     ################################################################
-    tool_kde_pri.create_kdeplot(field_y='Total_Fatal_Injuries', field_x='Year', style='darkgrid',
+    tool_kde_pri.create_kdeplot(field_y='Total_Fatal_Injuries', field_x='Year', style='darkgrid', hue='Amateur_Built',
                                 title='PRIVATE PLANE CRASH FOR TOTAL FATAL INJURIES')
 
     ##############################
@@ -528,3 +554,28 @@ if __name__ == '__main__':
 
     # show the plot
     plt.show()
+
+    sns.violinplot(x='Weather_Condition', y='Total_Uninjured', data=new_df)
+
+    # add a title and y-axis label
+    plt.title("Total Number of Uninjured passengers by Weather")
+    plt.ylabel("Number of Uninjured passengers")
+
+    # show the plot
+    plt.show()
+
+    ###############################
+    # SUBPLOTS
+    ###############################
+    ##############################################################
+    # SUBPLOTS FOR COUNTRY
+    ##############################################################
+    countries = new_df['Country'].unique()[:6]
+    create_sub_line(df=new_df, u=countries, field='Country', title='Number of Accidents by Year for first 6 Countries')
+
+    ##############################################################
+    # SUBPLOTS FOR WEATHER CONDITION
+    ##############################################################
+    weathers = new_df['Weather_Condition'].unique()
+    create_sub_line(df=new_df, u=weathers, field='Weather_Condition', title='Number of Accidents by Year for Weather',
+                    rows=1, cols=2, fig_y=4)
