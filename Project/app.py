@@ -172,7 +172,7 @@ q6_style = {'width': '50%', 'display': 'inline-block',
             'vertical-align': 'middle'}
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-my_app = dash.Dash('HW4', external_stylesheets=external_stylesheets)
+my_app = dash.Dash('Final Project', external_stylesheets=external_stylesheets)
 server = my_app.server
 
 my_app.layout = html.Div([
@@ -191,6 +191,7 @@ my_app.layout = html.Div([
                 [
                     html.Li("Pick a Category"),
                     html.Li("Select a Date (This is imperative in order to get the result)"),
+                    html.Li("Result might not show due to the time chosen (dataset does not exist for that particular time)"),
                     html.Li("Pick from the option display for that category"),
                 ]
             ),
@@ -262,6 +263,8 @@ my_app.layout = html.Div([
                     html.Li("Pick a Category"),
                     html.Li("Pick the type of plot"),
                     html.Li("Select a Date (This is imperative in order to get the result)"),
+                    html.Li(
+                        "Result might not show due to the time chosen (dataset does not exist for that particular time)"),
                     html.Li("Pick from the option display for that category"),
                 ]
             ),
@@ -343,6 +346,8 @@ my_app.layout = html.Div([
                 [
                     html.Li("Pick a Category"),
                     html.Li("Select a Date (This is imperative in order to get the result)"),
+                    html.Li(
+                        "Result might not show due to the time chosen (dataset does not exist for that particular time)"),
                 ]
             ),
             html.Br(),
@@ -363,6 +368,8 @@ my_app.layout = html.Div([
                     html.Li("Select multiple aircraft sizes you are wanting to analyze"),
                     html.Li("Pick a Category"),
                     html.Li("Select a Date (This is imperative in order to get the result)"),
+                    html.Li(
+                        "Result might not show due to the time chosen (dataset does not exist for that particular time)"),
                 ]
             ),
             html.Br(),
@@ -393,6 +400,8 @@ my_app.layout = html.Div([
                     html.Li("Select multiple aircraft sizes you are wanting to analyze"),
                     html.Li("Pick Hue (This will analyze other data points in your plot)"),
                     html.Li("Select a Date (This is imperative in order to get the result)"),
+                    html.Li(
+                        "Result might not show due to the time chosen (dataset does not exist for that particular time)"),
                 ]
             ),
             html.Br(),
@@ -424,6 +433,8 @@ my_app.layout = html.Div([
                     html.Li("Select multiple aircraft sizes you are wanting to analyze"),
                     html.Li("Pick Hue (This will analyze other data points in your plot)"),
                     html.Li("Select a Date (This is imperative in order to get the result)"),
+                    html.Li(
+                        "Result might not show due to the time chosen (dataset does not exist for that particular time)"),
                 ]
             ),
             html.Br(),
@@ -457,6 +468,8 @@ my_app.layout = html.Div([
                     html.Li("Pick an Incident you want to analyze"),
                     html.Li("Pick Hue (This will analyze other data points in your plot)"),
                     html.Li("Select a Date (This is imperative in order to get the result)"),
+                    html.Li(
+                        "Result might not show due to the time chosen (dataset does not exist for that particular time)"),
                 ]
             ),
             html.Br(),
@@ -487,6 +500,8 @@ my_app.layout = html.Div([
                 [
                     html.Li("Pick a Category"),
                     html.Li("Select a Date (This is imperative in order to get the result)"),
+                    html.Li(
+                        "Result might not show due to the time chosen (dataset does not exist for that particular time)"),
                     html.Li("Pick from the option display for that category"),
                 ]
             ),
@@ -557,6 +572,8 @@ my_app.layout = html.Div([
                 [
                     html.Li("Pick a Category"),
                     html.Li("Select a Date (This is imperative in order to get the result)"),
+                    html.Li(
+                        "Result might not show due to the time chosen (dataset does not exist for that particular time)"),
                     html.Li("Set width you want for your graph (Default is already set to 1500)"),
                     html.Li("Set height you want for your graph (Default is already set to 800)"),
                 ]
@@ -592,8 +609,10 @@ my_app.layout = html.Div([
             html.H3('Steps:'),
             html.Ul(
                 [
-                    html.Li("Pick a Incident"),
+                    html.Li("Pick an Incident"),
                     html.Li("Select a Date (This is imperative in order to get the result)"),
+                    html.Li(
+                        "Result might not show due to the time chosen (dataset does not exist for that particular time)"),
                 ]
             ),
             html.Br(),
