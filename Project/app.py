@@ -5,6 +5,7 @@ from dash import html
 from datetime import date
 import plotly.express as px
 from dash.dependencies import Input, Output
+import dash_bootstrap_components as dbc
 
 # Question 1
 url = 'https://raw.githubusercontent.com/Follyboy/Aviation_Accident_Analysis/main/Project/cleaned_dataframe.csv'
@@ -163,472 +164,1183 @@ input_style_title = {
 input_style = {
     'font-family': 'Times New Roman',
     'font-weight': 'bold',
-    'background-color': '#F2F2F2',
     'text-align': 'center',
+}
+
+heading_style = {
+    'padding-top': '6%',
+    'font-family': 'Arial',
+    'font-weight': 'bold',
+    'text-align': 'left',
+    'font-size': '28px',
+    'line-height': '34px',
+}
+
+graph_heading_style = {
+    'padding-top': '6%',
+    'font-family': 'Arial',
+    'font-weight': 'bold',
+    'text-align': 'center',
+    'font-size': '28px',
+    'line-height': '34px',
+}
+
+sub_heading_style = {
+    'font-family': 'Arial',
+    'font-style': 'normal',
+    'font-weight': 400,
+    'font-size': '15px',
+    'line-height': '18px',
+}
+
+continent_style = {
+    'font-family': 'Arial',
+    'font-weight': 'bold',
+    'text-align': 'left',
+    'font-size': '20px',
+}
+
+cat_style = {
+    'font-family': 'Arial',
+    'font-weight': 'bold',
+    'text-align': 'left',
+    'font-size': '20px',
 }
 
 # Question 6
 q6_style = {'width': '50%', 'display': 'inline-block',
             'vertical-align': 'middle'}
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+external_stylesheets = [dbc.themes.SLATE]
 my_app = dash.Dash('Final Project', external_stylesheets=external_stylesheets)
 server = my_app.server
 
-my_app.layout = html.Div([
-    html.Div(
-        className='header',
-        children=[
-            html.H1('Aviation Accident Analysis', className='header-title'),
-            html.H6('Author: Folaranmi Adeyeri', className='header-title'),
-        ],
-        style=input_style
-    ),
-    dcc.Tabs(id='tabs', value='tab1', children=[
-        dcc.Tab(label='LINE', value='tab1', children=[
-            html.H3('Steps:'),
-            html.Ul(
-                [
-                    html.Li("Pick a Category"),
-                    html.Li("Select a Date (This is imperative in order to get the result)"),
-                    html.Li("Result might not show due to the time chosen (dataset does not exist for that particular time)"),
-                    html.Li("Pick from the option display for that category"),
-                ]
-            ),
-            html.Br(),
-            html.H3('Pick the Category'),
-            dcc.Dropdown(id='dropdown_col', options=value_cat_col, value='Country', multi=False),
-            html.H3('Select Date'),
-            dcc.DatePickerRange(id='date_1',
-                                min_date_allowed=date(1974, 1, 1),
-                                max_date_allowed=date(2023, 1, 1)
-                                ),
-            html.Div(id='a_1', children=[
-                html.H1('Aviation Accident Analysis by Country over the years', style=input_style_title),
-                html.H3('Pick the Country or Ocean'),
-                dcc.Dropdown(id='dropdown_country', options=value_country_col, value=['United States'], multi=True),
-            ], style={'display': 'none'}),
-            html.Div(id='a_2', children=[
-                html.H1('Aviation Analysis by Month over the years', style=input_style_title),
-                html.H3('Pick the Month'),
-                dcc.Dropdown(id='dropdown_month', options=value_month_col, value=['January'], multi=True),
-            ], style={'display': 'none'}),
-            html.Div(id='a_3', children=[
-                html.H1('Aviation Analysis by Day over the years', style=input_style_title),
-                html.H3('Pick the Day'),
-                dcc.Dropdown(id='dropdown_day', options=value_day_col, value=['Monday'], multi=True),
-            ], style={'display': 'none'}),
-            html.Div(id='a_4', children=[
-                html.H1('Aviation Analysis by Injury Severity over the years', style=input_style_title),
-                html.H3('Pick the Injury Severity'),
-                dcc.Dropdown(id='dropdown_sev', options=value_sev_col, value=['Fatal'], multi=True),
-            ], style={'display': 'none'}),
-            html.Div(id='a_5', children=[
-                html.H1('Aviation Analysis by Engine Type over the years', style=input_style_title),
-                html.H3('Pick the Engine Type'),
-                dcc.Dropdown(id='dropdown_ety', options=value_ety_col, value=['Reciprocating'], multi=True),
-            ], style={'display': 'none'}),
-            html.Div(id='a_6', children=[
-                html.H1('Aviation Analysis by Weather Condition over the years', style=input_style_title),
-                html.H3('Pick the Weather Condition'),
-                dcc.Dropdown(id='dropdown_weather', options=value_weather_col, value=['IMC'], multi=True),
-            ], style={'display': 'none'}),
-            html.Div(id='a_7', children=[
-                html.H1('Aviation Accident Analysis by Amateur Built Aircraft over the years', style=input_style_title),
-                html.H3('Pick the Amateur Built'),
-                dcc.Dropdown(id='dropdown_am', options=value_am_col, value=['Yes'], multi=True),
-            ], style={'display': 'none'}),
-            html.Div(id='a_8', children=[
-                html.H1('Aviation Accident Analysis by Investigation Type over the years', style=input_style_title),
-                html.H3('Pick the Investigation Type'),
-                dcc.Dropdown(id='dropdown_it', options=value_it_col, value=['Accident'], multi=True),
-            ], style={'display': 'none'}),
-            html.Div(id='a_9', children=[
-                html.H1('Aviation Accident Analysis by Aircraft damage over the years', style=input_style_title),
-                html.H3('Pick the Aircraft damage'),
-                dcc.Dropdown(id='dropdown_ad', options=value_ad_col, value=['Destroyed'], multi=True),
-            ], style={'display': 'none'}),
-            html.Div(id='a_10', children=[
-                html.H1('Aviation Accident Analysis by Number of Engines in Aircraft over the years',
-                        style=input_style_title),
-                html.H3('Pick the Number of Engines'),
-                dcc.Dropdown(id='dropdown_numo', options=value_numo_col, value=['2'], multi=True),
-            ], style={'display': 'none'}),
-            dcc.Graph(id='my-graph'),
-        ]),
-        dcc.Tab(label='BAR', value='tab2', children=[
-            html.H3('Steps:'),
-            html.Ul(
-                [
-                    html.Li("Pick a Category"),
-                    html.Li("Pick the type of plot"),
-                    html.Li("Select a Date (This is imperative in order to get the result)"),
-                    html.Li(
-                        "Result might not show due to the time chosen (dataset does not exist for that particular time)"),
-                    html.Li("Pick from the option display for that category"),
-                ]
-            ),
-            html.Br(),
-            html.H3('Pick the Category'),
-            dcc.Dropdown(id='dropdown_col_bar', options=value_cat_col, value='Country', multi=False),
-            html.H3('Pick Plot'),
-            dcc.RadioItems(
-                id='radio_bar',
-                options=[
-                    {'label': 'Time Series Stack Plot', 'value': 'Time Series Stack Plot'},
-                    {'label': 'Time Series Group Plot', 'value': 'Time Series Group Plot'},
-                ],
-                value='Time Series Stack Plot',
-                labelStyle={'display': 'inline', 'margin': '10px'}
-            ),
-            html.H3('Select Date'),
-            dcc.DatePickerRange(id='date_2',
-                                min_date_allowed=date(1974, 1, 1),
-                                max_date_allowed=date(2023, 1, 1)
-                                ),
-            html.Div(id='b_1', children=[
-                html.H1('Aviation Accident Analysis by Country over the years', style=input_style_title),
-                html.H3('Pick the Country or Ocean'),
-                dcc.Dropdown(id='dropdown_country_bar', options=value_country_col, value=['United States'], multi=True),
-            ], style={'display': 'none'}),
-            html.Div(id='b_2', children=[
-                html.H1('Aviation Analysis by Month over the years', style=input_style_title),
-                html.H3('Pick the Month'),
-                dcc.Dropdown(id='dropdown_month_bar', options=value_month_col, value=['January'], multi=True),
-            ], style={'display': 'none'}),
-            html.Div(id='b_3', children=[
-                html.H1('Aviation Analysis by Day over the years', style=input_style_title),
-                html.H3('Pick the Day'),
-                dcc.Dropdown(id='dropdown_day_bar', options=value_day_col, value=['Monday'], multi=True),
-            ], style={'display': 'none'}),
-            html.Div(id='b_4', children=[
-                html.H1('Aviation Analysis by Injury Severity over the years', style=input_style_title),
-                html.H3('Pick the Injury Severity'),
-                dcc.Dropdown(id='dropdown_sev_bar', options=value_sev_col, value=['Fatal'], multi=True),
-            ], style={'display': 'none'}),
-            html.Div(id='b_5', children=[
-                html.H1('Aviation Analysis by Engine Type over the years', style=input_style_title),
-                html.H3('Pick the Engine Type'),
-                dcc.Dropdown(id='dropdown_ety_bar', options=value_ety_col, value=['Reciprocating'], multi=True),
-            ], style={'display': 'none'}),
-            html.Div(id='b_6', children=[
-                html.H1('Aviation Analysis by Weather Condition over the years', style=input_style_title),
-                html.H3('Pick the Weather Condition'),
-                dcc.Dropdown(id='dropdown_weather_bar', options=value_weather_col, value=['IMC'], multi=True),
-            ], style={'display': 'none'}),
-            html.Div(id='b_7', children=[
-                html.H1('Aviation Accident Analysis by Amateur Built Aircraft over the years', style=input_style_title),
-                html.H3('Pick the Amateur Built'),
-                dcc.Dropdown(id='dropdown_am_bar', options=value_am_col, value=['Yes'], multi=True),
-            ], style={'display': 'none'}),
-            html.Div(id='b_8', children=[
-                html.H1('Aviation Accident Analysis by Investigation Type over the years', style=input_style_title),
-                html.H3('Pick the Investigation Type'),
-                dcc.Dropdown(id='dropdown_it_bar', options=value_it_col, value=['Accident'], multi=True),
-            ], style={'display': 'none'}),
-            html.Div(id='b_9', children=[
-                html.H1('Aviation Accident Analysis by Aircraft damage over the years', style=input_style_title),
-                html.H3('Pick the Aircraft damage'),
-                dcc.Dropdown(id='dropdown_ad_bar', options=value_ad_col, value=['Destroyed'], multi=True),
-            ], style={'display': 'none'}),
-            html.Div(id='b_10', children=[
-                html.H1('Aviation Accident Analysis by Number of Engines in Aircraft over the years',
-                        style=input_style_title),
-                html.H3('Pick the Number of Engines'),
-                dcc.Dropdown(id='dropdown_numo_bar', options=value_numo_col, value=['2'], multi=True),
-            ], style={'display': 'none'}),
-            dcc.Graph(id='my-graph2'),
-            html.Br(),
-        ]),
-        dcc.Tab(label='PIE CHART', value='tab3', children=[
-            html.H3('Steps:'),
-            html.Ul(
-                [
-                    html.Li("Pick a Category"),
-                    html.Li("Select a Date (This is imperative in order to get the result)"),
-                    html.Li(
-                        "Result might not show due to the time chosen (dataset does not exist for that particular time)"),
-                ]
-            ),
-            html.Br(),
-            html.H3('Pick the Category'),
-            dcc.Dropdown(id='dropdown_col_pie', options=value_cat_col_1, value='Month', multi=False),
-            html.H3('Select Date'),
-            dcc.DatePickerRange(id='date_3',
-                                min_date_allowed=date(1974, 1, 1),
-                                max_date_allowed=date(2023, 1, 1)
-                                ),
-            dcc.Graph(id='my-graph3'),
-        ]),
-        dcc.Tab(label='DISPLOT', value='tab4', children=[
-            html.H3('Steps:'),
-            html.Ul(
-                [
-                    html.Li("Pick an Incident you want to analyze"),
-                    html.Li("Select multiple aircraft sizes you are wanting to analyze"),
-                    html.Li("Pick a Category"),
-                    html.Li("Select a Date (This is imperative in order to get the result)"),
-                    html.Li(
-                        "Result might not show due to the time chosen (dataset does not exist for that particular time)"),
-                ]
-            ),
-            html.Br(),
-            html.H3('Pick the Incident'),
-            dcc.Dropdown(id='dropdown_col_dis', options=dis_col, value='Total_Fatal_Injuries', multi=False),
-            html.Br(),
-            dcc.Checklist(
-                id='dis_check',
-                options=dis_col_2_,
-                value=dis_col_2,
-                inline=True,
-                labelStyle={'margin-right': '10px'}
-            ),
-            html.H3('Pick the Category'),
-            dcc.Dropdown(id='dropdown_col_dis_2', options=value_cat_col_1, value='Amateur_Built', multi=False),
-            html.H3('Select Date'),
-            dcc.DatePickerRange(id='date_4',
-                                min_date_allowed=date(1974, 1, 1),
-                                max_date_allowed=date(2023, 1, 1)
-                                ),
-            dcc.Graph(id='my-graph4'),
-        ]),
-        dcc.Tab(label='KDE', value='tab5', children=[
-            html.H3('Steps:'),
-            html.Ul(
-                [
-                    html.Li("Pick an Incident you want to analyze"),
-                    html.Li("Select multiple aircraft sizes you are wanting to analyze"),
-                    html.Li("Pick Hue (This will analyze other data points in your plot)"),
-                    html.Li("Select a Date (This is imperative in order to get the result)"),
-                    html.Li(
-                        "Result might not show due to the time chosen (dataset does not exist for that particular time)"),
-                ]
-            ),
-            html.Br(),
-            html.H3('Pick the Incident'),
-            dcc.Dropdown(id='dropdown_col_kde', options=dis_col, value='Total_Fatal_Injuries', multi=False),
-            html.Br(),
-            dcc.Checklist(
-                id='kde_check',
-                options=dis_col_2_,
-                value=dis_col_2,
-                inline=True,
-                labelStyle={'margin-right': '10px'}
-            ),
-            html.H3('Hue'),
-            dcc.Dropdown(id='dropdown_col_kde_2', options=cat_col_1, value='Total_Fatal_Injuries', multi=False),
-            html.H3('Select Date'),
-            dcc.DatePickerRange(id='date_5',
-                                min_date_allowed=date(1974, 1, 1),
-                                max_date_allowed=date(2023, 1, 1)
-                                ),
-            dcc.Graph(id='my-graph5'),
-        ]),
-        dcc.Tab(label='SCATTER', value='tab6', children=[
-            html.H3('Steps:'),
-            html.Ul(
-                [
-                    html.Li("Pick an Incident you want to analyze"),
-                    html.Li("Pick an second Incident you want to analyze against the first"),
-                    html.Li("Select multiple aircraft sizes you are wanting to analyze"),
-                    html.Li("Pick Hue (This will analyze other data points in your plot)"),
-                    html.Li("Select a Date (This is imperative in order to get the result)"),
-                    html.Li(
-                        "Result might not show due to the time chosen (dataset does not exist for that particular time)"),
-                ]
-            ),
-            html.Br(),
-            html.H3('Pick the Incident'),
-            dcc.Dropdown(id='dropdown_col_sc', options=dis_col, value='Total_Fatal_Injuries', multi=False),
-            html.Br(),
-            dcc.Checklist(
-                id='sc_check',
-                options=dis_col_2_,
-                value=dis_col_2,
-                inline=True,
-                labelStyle={'margin-right': '10px'}
-            ),
-            html.H3('Pick the Second Incident'),
-            dcc.Dropdown(id='dropdown_col_sc_2', options=dis_col, value='Total_Fatal_Injuries', multi=False),
-            html.H3('Hue'),
-            dcc.Dropdown(id='dropdown_col_sc_3', options=cat_col_1, multi=False),
-            html.H3('Select Date'),
-            dcc.DatePickerRange(id='date_6',
-                                min_date_allowed=date(1974, 1, 1),
-                                max_date_allowed=date(2023, 1, 1)
-                                ),
-            dcc.Graph(id='my-graph6'),
-        ]),
-        dcc.Tab(label='BOX', value='tab7', children=[
-            html.H3('Steps:'),
-            html.Ul(
-                [
-                    html.Li("Pick a Category"),
-                    html.Li("Select multiple aircraft sizes you are wanting to analyze"),
-                    html.Li("Pick an Incident you want to analyze"),
-                    html.Li("Pick Hue (This will analyze other data points in your plot)"),
-                    html.Li("Select a Date (This is imperative in order to get the result)"),
-                    html.Li(
-                        "Result might not show due to the time chosen (dataset does not exist for that particular time)"),
-                ]
-            ),
-            html.Br(),
-            html.H3('Pick the Category'),
-            dcc.Dropdown(id='dropdown_col_bo', options=cat_col_1, value='Day', multi=False),
-            html.Br(),
-            dcc.Checklist(
-                id='bo_check',
-                options=dis_col_2_,
-                value=dis_col_2,
-                inline=True,
-                labelStyle={'margin-right': '10px'}
-            ),
-            html.H3('Pick the Incident'),
-            dcc.Dropdown(id='dropdown_col_bo_2', options=dis_col, value='Total_Fatal_Injuries', multi=False),
-            html.H3('Hue'),
-            dcc.Dropdown(id='dropdown_col_bo_3', options=cat_col, multi=False),
-            html.H3('Select Date'),
-            dcc.DatePickerRange(id='date_7',
-                                min_date_allowed=date(1974, 1, 1),
-                                max_date_allowed=date(2023, 1, 1)
-                                ),
-            dcc.Graph(id='my-graph7'),
-        ]),
-        dcc.Tab(label='HISTOGRAM', value='tab8', children=[
-            html.H3('Steps:'),
-            html.Ul(
-                [
-                    html.Li("Pick a Category"),
-                    html.Li("Select a Date (This is imperative in order to get the result)"),
-                    html.Li(
-                        "Result might not show due to the time chosen (dataset does not exist for that particular time)"),
-                    html.Li("Pick from the option display for that category"),
-                ]
-            ),
-            html.Br(),
-            html.H3('Pick the Category'),
-            dcc.Dropdown(id='dropdown_col_h', options=value_cat_col, value='Country', multi=False),
-            html.H3('Select Date'),
-            dcc.DatePickerRange(id='date_8',
-                                min_date_allowed=date(1974, 1, 1),
-                                max_date_allowed=date(2023, 1, 1)
-                                ),
-            html.Div(id='h_1', children=[
-                html.H1('Aviation Accident Analysis by Country over the years', style=input_style_title),
-                html.H3('Pick the Country or Ocean'),
-                dcc.Dropdown(id='dropdown_country_h', options=value_country_col, value=['United States'], multi=True),
-            ], style={'display': 'none'}),
-            html.Div(id='h_2', children=[
-                html.H1('Aviation Analysis by Month over the years', style=input_style_title),
-                html.H3('Pick the Month'),
-                dcc.Dropdown(id='dropdown_month_h', options=value_month_col, value=['January'], multi=True),
-            ], style={'display': 'none'}),
-            html.Div(id='h_3', children=[
-                html.H1('Aviation Analysis by Day over the years', style=input_style_title),
-                html.H3('Pick the Day'),
-                dcc.Dropdown(id='dropdown_day_h', options=value_day_col, value=['Monday'], multi=True),
-            ], style={'display': 'none'}),
-            html.Div(id='h_4', children=[
-                html.H1('Aviation Analysis by Injury Severity over the years', style=input_style_title),
-                html.H3('Pick the Injury Severity'),
-                dcc.Dropdown(id='dropdown_sev_h', options=value_sev_col, value=['Fatal'], multi=True),
-            ], style={'display': 'none'}),
-            html.Div(id='h_5', children=[
-                html.H1('Aviation Analysis by Engine Type over the years', style=input_style_title),
-                html.H3('Pick the Engine Type'),
-                dcc.Dropdown(id='dropdown_ety_h', options=value_ety_col, value=['Reciprocating'], multi=True),
-            ], style={'display': 'none'}),
-            html.Div(id='h_6', children=[
-                html.H1('Aviation Analysis by Weather Condition over the years', style=input_style_title),
-                html.H3('Pick the Weather Condition'),
-                dcc.Dropdown(id='dropdown_weather_h', options=value_weather_col, value=['IMC'], multi=True),
-            ], style={'display': 'none'}),
-            html.Div(id='h_7', children=[
-                html.H1('Aviation Accident Analysis by Amateur Built Aircraft over the years', style=input_style_title),
-                html.H3('Pick the Amateur Built'),
-                dcc.Dropdown(id='dropdown_am_h', options=value_am_col, value=['Yes'], multi=True),
-            ], style={'display': 'none'}),
-            html.Div(id='h_8', children=[
-                html.H1('Aviation Accident Analysis by Investigation Type over the years', style=input_style_title),
-                html.H3('Pick the Investigation Type'),
-                dcc.Dropdown(id='dropdown_it_h', options=value_it_col, value=['Accident'], multi=True),
-            ], style={'display': 'none'}),
-            html.Div(id='h_9', children=[
-                html.H1('Aviation Accident Analysis by Aircraft damage over the years', style=input_style_title),
-                html.H3('Pick the Aircraft damage'),
-                dcc.Dropdown(id='dropdown_ad_h', options=value_ad_col, value=['Destroyed'], multi=True),
-            ], style={'display': 'none'}),
-            html.Div(id='h_10', children=[
-                html.H1('Aviation Accident Analysis by Number of Engines in Aircraft over the years',
-                        style=input_style_title),
-                html.H3('Pick the Number of Engines'),
-                dcc.Dropdown(id='dropdown_numo_h', options=value_numo_col, value=['2'], multi=True),
-            ], style={'display': 'none'}),
-            dcc.Graph(id='my-graph8'),
-        ]),
-        dcc.Tab(label='PAIR', value='tab9', children=[
-            html.H3('Steps:'),
-            html.Ul(
-                [
-                    html.Li("Pick a Category"),
-                    html.Li("Select a Date (This is imperative in order to get the result)"),
-                    html.Li(
-                        "Result might not show due to the time chosen (dataset does not exist for that particular time)"),
-                    html.Li("Set width you want for your graph (Default is already set to 1500)"),
-                    html.Li("Set height you want for your graph (Default is already set to 800)"),
-                ]
-            ),
-            html.Br(),
-            html.H3('Pick the Category'),
-            dcc.Dropdown(id='dropdown_col_p', options=p_col, value='Total_Fatal_Injuries', multi=True),
-            html.Br(),
-            html.H3('Select Date'),
-            dcc.DatePickerRange(id='date_9',
-                                min_date_allowed=date(1974, 1, 1),
-                                max_date_allowed=date(2023, 1, 1)
-                                ),
-            html.H3('Width:'),
-            dcc.Input(
-                id='width',
-                type='number',
-                value=1500,
-                min=500,
-                step=1
-            ),
-            html.H3('Height:'),
-            dcc.Input(
-                id='height',
-                type='number',
-                value=800,
-                min=500,
-                step=1
-            ),
-            dcc.Graph(id='my-graph9'),
-        ]),
-        dcc.Tab(label='HEAT MAP', value='tab10', children=[
-            html.H3('Steps:'),
-            html.Ul(
-                [
-                    html.Li("Pick an Incident"),
-                    html.Li("Select a Date (This is imperative in order to get the result)"),
-                    html.Li(
-                        "Result might not show due to the time chosen (dataset does not exist for that particular time)"),
-                ]
-            ),
-            html.Br(),
-            html.H3('Pick the Incident'),
-            dcc.Dropdown(id='dropdown_col_he', options=p_col, value=['Total_Fatal_Injuries', 'Total_Serious_Injuries'],
-                         multi=True),
-            html.Br(),
-            html.H3('Select Date'),
-            dcc.DatePickerRange(id='date_10',
-                                min_date_allowed=date(1974, 1, 1),
-                                max_date_allowed=date(2023, 1, 1)
-                                ),
-            dcc.Graph(id='my-graph10'),
-        ]),
+
+def draw_figure():
+    df__ = df.copy()
+    mask = df__[cat_col[0]].isin(['Mexico', 'Puerto Rico'])
+    filter_df = df__[mask]
+    group_bar = filter_df.groupby(['Country', 'Year']).size().reset_index(name='Count')
+    return html.Div([
+        dbc.Card(
+            dbc.CardBody([
+                dcc.Graph(
+                    figure=px.bar(group_bar, x='Year', y='Count', color='Country', barmode='stack',
+                                  title='Accidents by Country').update_layout(
+                        template='plotly_dark',
+                        plot_bgcolor='rgba(0, 0, 0, 0)',
+                        paper_bgcolor='rgba(0, 0, 0, 0)',
+                        margin={"r": 0, "t": 60, "l": 0, "b": 0},
+                        height=300
+                    ),
+                    config={
+                        'displayModeBar': False
+                    },
+                )
+            ])
+        ),
     ])
-])
+
+
+def draw_line():
+    df__ = df.copy()
+    mask = df__[cat_col[0]].isin(['Mexico', 'Puerto Rico', 'Bahamas'])
+    filter_df = df__[mask]
+    group_bar = filter_df.groupby(['Country', 'Year']).size().reset_index(name='Count')
+    return html.Div([
+        dbc.Card(
+            dbc.CardBody([
+                dcc.Graph(
+                    figure=px.line(group_bar, x='Year', y='Count', color='Country',
+                                   title='Accidents by Country').update_layout(
+                        template='plotly_dark',
+                        plot_bgcolor='rgba(0, 0, 0, 0)',
+                        paper_bgcolor='rgba(0, 0, 0, 0)',
+                        margin={"r": 0, "t": 60, "l": 0, "b": 0},
+                        height=300
+                    ),
+                    config={
+                        'displayModeBar': False
+                    },
+                )
+            ])
+        ),
+    ])
+
+
+def draw_geo():
+    df__ = df.copy()
+    df__ = df__.drop_duplicates(subset=['Country'])
+    return html.Div([
+        dbc.Card(
+            dbc.CardBody([
+                dcc.Graph(
+                    figure=px.scatter_geo(df__, locations='Country', locationmode='country names',
+                                          projection='natural earth').update_layout(
+                        template='plotly_dark',
+                        plot_bgcolor='rgba(0, 0, 0, 0)',
+                        paper_bgcolor='rgba(0, 0, 0, 0)',
+                        margin={"r": 0, "t": 0, "l": 0, "b": 0},
+                        height=400,
+                    ),
+                    config={
+                        'displayModeBar': False
+                    },
+                )
+            ])
+        ),
+    ])
+
+
+def draw_pie():
+    df__ = df.copy()
+
+    counts = df__['Day'].value_counts().reset_index()
+    counts.columns = ['Day', 'Count']
+
+    return html.Div([
+        dbc.Card(
+            dbc.CardBody([
+                dcc.Graph(
+                    figure=px.pie(counts, values='Count', names='Day', title=f'Accidents by Day').update_layout(
+                        template='plotly_dark',
+                        plot_bgcolor='rgba(0, 0, 0, 0)',
+                        paper_bgcolor='rgba(0, 0, 0, 0)',
+                        margin={"r": 0, "t": 60, "l": 0, "b": 0},
+                        height=300,
+                    ),
+                    config={
+                        'displayModeBar': False
+                    },
+                )
+            ])
+        ),
+    ])
+
+
+main_content = html.Div(
+    children=[
+        html.Div(
+            className='header',
+            children=[
+                html.P('Aviation Accident Analysis Dashboard', className='header-title', style=heading_style),
+                html.P('Commercial and Private Flight Dataset (Jan 1974 - Dec 2022)', className='header-sub-title',
+                       style=sub_heading_style),
+                dbc.Card(
+                    dbc.CardBody([
+                        dbc.Row([
+                            html.P('Graphs', className='continent-title',
+                                   style=continent_style),
+                            dbc.Col([
+                                draw_figure()
+                            ], width=6),
+                            dbc.Col([
+                                draw_pie()
+                            ], width=6),
+                        ], align='center'),
+                        html.Br(),
+                        dbc.Row([
+                            dbc.Col([
+                                draw_line()
+                            ], width=12),
+                        ], align='center'),
+                        html.Br(),
+                        dbc.Row([
+                            dbc.Col([
+                                html.P('Accidents by Continent', className='continent-title',
+                                       style=continent_style),
+                                draw_geo()
+                            ], width=12)
+                        ], align='center'),
+                    ]), color='dark'
+                )
+            ],
+        ),
+    ],
+    className="main-content",
+    style={'width': '100%'})
+
+button_style = {
+    'width': '100%',
+    'margin': '3%',
+    'background-color': 'lightgray',
+    'border': 'none',
+    'cursor': 'pointer'
+}
+
+sidebar = html.Div(
+    children=[
+        html.Img(src='assets/image_header_2.png',
+                 style={
+                     'width': '70%',
+                     'top': '50%',
+                     'left': '50%',
+                     'border-radius': '5%',
+                 }),
+        html.Hr(),
+        html.Div([
+            dbc.Nav(
+                [
+                    dbc.NavLink(
+                        [html.Img(src='assets/dashboard.png', style={'width': '10%', 'margin-right': '5%'}),
+                         "Dashboard"],
+                        href="/", active="exact"),
+                    html.Br(),
+                    html.P([html.Img(src='assets/chart.png', style={'width': '8%', 'margin-right': '5%'}),
+                            'Charts & Plots']),
+                    dbc.NavLink([html.Img(src='assets/line.png', style={'width': '8%', 'margin-right': '5%'}), "Line"],
+                                href="/line", active="exact", style={'text-align': 'left'}),
+                    dbc.NavLink([html.Img(src='assets/bar.png', style={'width': '8%', 'margin-right': '5%'}), "Bar"],
+                                href="/bar", active="exact", style={'text-align': 'left'}),
+                    dbc.NavLink([html.Img(src='assets/pie.png', style={'width': '8%', 'margin-right': '5%'}), "Pie"],
+                                href="/pie", active="exact", style={'text-align': 'left'}),
+                    dbc.NavLink(
+                        [html.Img(src='assets/dis.png', style={'width': '8%', 'margin-right': '5%'}), "Displot"],
+                        href="/displot", active="exact", style={'text-align': 'left'}),
+                    dbc.NavLink([html.Img(src='assets/kde.png', style={'width': '8%', 'margin-right': '5%'}), "KDE"],
+                                href="/kde", active="exact", style={'text-align': 'left'}),
+                    dbc.NavLink(
+                        [html.Img(src='assets/scatter.png', style={'width': '8%', 'margin-right': '5%'}), "Scatter"],
+                        href="/scatter", active="exact", style={'text-align': 'left'}),
+                    dbc.NavLink([html.Img(src='assets/box.png', style={'width': '8%', 'margin-right': '5%'}), "Box"],
+                                href="/box", active="exact", style={'text-align': 'left'}),
+                    dbc.NavLink(
+                        [html.Img(src='assets/hist.png', style={'width': '8%', 'margin-right': '5%'}), "Histogram"],
+                        href="/histogram", active="exact", style={'text-align': 'left'}),
+                    dbc.NavLink([html.Img(src='assets/pair.png', style={'width': '8%', 'margin-right': '5%'}), "Pair"],
+                                href="/pair", active="exact", style={'text-align': 'left'}),
+                    dbc.NavLink(
+                        [html.Img(src='assets/heat.png', style={'width': '8%', 'margin-right': '5%'}), "Heat Map"],
+                        href="/heat-map", active="exact", style={'text-align': 'left'}),
+                    html.Br(),
+                    html.Br(),
+                    dbc.NavLink(
+                        [html.Img(src='assets/about.png', style={'width': '8%', 'margin-right': '5%'}), "About Model"],
+                        href="/about", active="exact"),
+                    html.Br(),
+                    html.Br(),
+                    html.P('Developer'),
+                    html.Img(src='assets/fola.png',
+                             style={'margin-left': '25%', 'width': '45%', 'border-radius': '50%'}),
+                    html.P('Folaranmi Adeyeri', style={'font-weight': 'bold'}),
+                    html.A(html.P('folar.adeyeri@gmail.com'), href='mailto:folar.adeyeri@gmail.com'),
+                    dbc.Row([
+                        dbc.Col([
+                            html.A(
+                                html.Img(src='assets/git.png',
+                                         style={'margin-left': '70%', 'width': '23%'}),
+                                href='https://github.com/Follyboy',
+                                target='_blank'
+                            ),
+                        ], width=6),
+                        dbc.Col([
+                            html.A(
+                                html.Img(src='assets/linkedin.png',
+                                         style={'margin-right': '80%', 'width': '20%'}),
+                                href='https://www.linkedin.com/in/folaranmi-adeyeri-88800b124/',
+                                target='_blank'
+                            ),
+                        ], width=6)
+                    ], align='center'),
+                ],
+                vertical=True,
+                pills=True,
+                style={'width': '300px'}
+            ),
+
+        ],
+            className="sidebar",
+            style={
+                'text-align': 'center',
+                'align-items': 'center'
+            }
+        ),
+    ],
+    className="sidebar-content",
+    style={'width': '20%', 'justify-content': 'center', 'align-items': 'center'}
+)
+
+content = html.Div(id="page-content", style={'width': '80%'})
+
+my_app.layout = html.Div(
+    children=[
+        dcc.Location(id="url"),
+        sidebar,
+        content,
+    ],
+    style={'display': 'flex', 'width': '100%'}
+)
+
+line_layout = html.Div(
+    children=[
+        html.P('Line Plot', className='header-title-line', style=heading_style),
+        html.Hr(),
+        dbc.Card(
+            dbc.CardBody([
+                html.P('Steps:', style=continent_style),
+                html.Ul(
+                    [
+                        html.Li("Pick a Category"),
+                        html.Li("Select a Date (This is imperative in order to get the result)"),
+                        html.Li(
+                            "Result might not show due to the time chosen (dataset does not exist for that particular time)"),
+                        html.Li("Pick from the option displayed for that category"),
+                    ]
+                ),
+                html.Br(),
+                dbc.Row([
+                    dbc.Col([
+                        html.P('Pick the Category:', style=cat_style),
+                    ], width=2),
+                    dbc.Col([
+                        dcc.Dropdown(id='dropdown_col', options=value_cat_col, value='Country', multi=False,
+                                     style={'width': '20vw'}),
+                    ], width=10),
+                ], align='center'),
+                html.Br(),
+                dbc.Row([
+                    dbc.Col([
+                        html.P('Select Date:', style=cat_style),
+                    ], width=2),
+                    dbc.Col([
+                        dcc.DatePickerRange(id='date_1',
+                                            min_date_allowed=date(1974, 1, 1),
+                                            max_date_allowed=date(2023, 1, 1)
+                                            ),
+                    ], width=10),
+                ], align='center'),
+                html.Br(),
+                html.Div(id='a_1', children=[
+                    html.P('Aviation Accident Analysis by Country over the years', style=graph_heading_style),
+                    html.P('Pick the Country or Ocean', style=cat_style),
+                    dcc.Dropdown(id='dropdown_country', options=value_country_col, value=['United States'], multi=True),
+                ], style={'display': 'none'}),
+                html.Div(id='a_2', children=[
+                    html.P('Aviation Accident Analysis by Month over the years', style=graph_heading_style),
+                    html.P('Pick the Month', style=cat_style),
+                    dcc.Dropdown(id='dropdown_month', options=value_month_col, value=['January'], multi=True),
+                ], style={'display': 'none'}),
+                html.Div(id='a_3', children=[
+                    html.P('Aviation Accident Analysis by Day over the years', style=graph_heading_style),
+                    html.P('Pick the Day', style=cat_style),
+                    dcc.Dropdown(id='dropdown_day', options=value_day_col, value=['Monday'], multi=True),
+                ], style={'display': 'none'}),
+                html.Div(id='a_4', children=[
+                    html.P('Aviation Accident Analysis by Injury Severity over the years', style=graph_heading_style),
+                    html.P('Pick the Injury Severity', style=cat_style),
+                    dcc.Dropdown(id='dropdown_sev', options=value_sev_col, value=['Fatal'], multi=True),
+                ], style={'display': 'none'}),
+                html.Div(id='a_5', children=[
+                    html.P('Aviation Accident Analysis by Engine Type over the years', style=graph_heading_style),
+                    html.P('Pick the Engine Type', style=cat_style),
+                    dcc.Dropdown(id='dropdown_ety', options=value_ety_col, value=['Reciprocating'], multi=True),
+                ], style={'display': 'none'}),
+                html.Div(id='a_6', children=[
+                    html.P('Aviation Accident Analysis by Weather Condition over the years', style=graph_heading_style),
+                    html.P('Pick the Weather Condition', style=cat_style),
+                    dcc.Dropdown(id='dropdown_weather', options=value_weather_col, value=['IMC'], multi=True),
+                ], style={'display': 'none'}),
+                html.Div(id='a_7', children=[
+                    html.P('Aviation Accident Analysis by Amateur Built Aircraft over the years',
+                           style=graph_heading_style),
+                    html.P('Pick the Amateur Built', style=cat_style),
+                    dcc.Dropdown(id='dropdown_am', options=value_am_col, value=['Yes'], multi=True),
+                ], style={'display': 'none'}),
+                html.Div(id='a_8', children=[
+                    html.P('Aviation Accident Analysis by Investigation Type over the years',
+                           style=graph_heading_style),
+                    html.P('Pick the Investigation Type', style=cat_style),
+                    dcc.Dropdown(id='dropdown_it', options=value_it_col, value=['Accident'], multi=True),
+                ], style={'display': 'none'}),
+                html.Div(id='a_9', children=[
+                    html.P('Aviation Accident Analysis by Aircraft damage over the years', style=graph_heading_style),
+                    html.P('Pick the Aircraft damage', style=cat_style),
+                    dcc.Dropdown(id='dropdown_ad', options=value_ad_col, value=['Destroyed'], multi=True),
+                ], style={'display': 'none'}),
+                html.Div(id='a_10', children=[
+                    html.P('Aviation Accident Analysis by Number of Engines in Aircraft over the years',
+                           style=graph_heading_style),
+                    html.P('Pick the Number of Engines', style=cat_style),
+                    dcc.Dropdown(id='dropdown_numo', options=value_numo_col, value=['2'], multi=True),
+                ], style={'display': 'none'}),
+                dcc.Graph(id='my-graph'),
+            ]),
+        ),
+    ],
+    style={'margin-top': '2.5%'},
+    className='line-content',
+)
+
+bar_layout = html.Div(
+    children=[
+        html.P('Bar Chart', className='header-title-bar', style=heading_style),
+        html.Hr(),
+        dbc.Card(
+            dbc.CardBody([
+                html.P('Steps:', style=continent_style),
+                html.Ul(
+                    [
+                        html.Li("Pick a Category"),
+                        html.Li("Pick the type of plot"),
+                        html.Li("Select a Date (This is imperative in order to get the result)"),
+                        html.Li(
+                            "Result might not show due to the time chosen (dataset does not exist for that particular time)"),
+                        html.Li("Pick from the option display for that category"),
+                    ]
+                ),
+                html.Br(),
+                dbc.Row([
+                    dbc.Col([
+                        html.P('Pick the Category:', style=cat_style),
+                    ], width=2),
+                    dbc.Col([
+                        dcc.Dropdown(id='dropdown_col_bar', options=value_cat_col, value='Country', multi=False,
+                                     style={'width': '20vw'}),
+                    ], width=10),
+                ], align='center'),
+                html.Br(),
+                dbc.Row([
+                    dbc.Col([
+                        html.P('Pick Plot:', style=cat_style),
+                    ], width=2),
+                    dbc.Col([
+                        dcc.RadioItems(
+                            id='radio_bar',
+                            options=[
+                                {'label': 'Time Series Stack Plot', 'value': 'Time Series Stack Plot'},
+                                {'label': 'Time Series Group Plot', 'value': 'Time Series Group Plot'},
+                            ],
+                            value='Time Series Stack Plot',
+                            labelStyle={'display': 'inline', 'margin': '10px'}
+                        ),
+                    ], width=10),
+                ]),
+                html.Br(),
+                dbc.Row([
+                    dbc.Col([
+                        html.P('Select Date:', style=cat_style),
+                    ], width=2),
+                    dbc.Col([
+                        dcc.DatePickerRange(id='date_2',
+                                            min_date_allowed=date(1974, 1, 1),
+                                            max_date_allowed=date(2023, 1, 1)
+                                            ),
+                    ], width=10),
+                ], align='center'),
+                html.Div(id='b_1', children=[
+                    html.P('Aviation Accident Analysis by Country over the years', style=graph_heading_style),
+                    html.P('Pick the Country or Ocean', style=cat_style),
+                    dcc.Dropdown(id='dropdown_country_bar', options=value_country_col, value=['United States'],
+                                 multi=True),
+                ], style={'display': 'none'}),
+                html.Div(id='b_2', children=[
+                    html.P('Aviation Accident Analysis by Month over the years', style=graph_heading_style),
+                    html.P('Pick the Month', style=cat_style),
+                    dcc.Dropdown(id='dropdown_month_bar', options=value_month_col, value=['January'], multi=True),
+                ], style={'display': 'none'}),
+                html.Div(id='b_3', children=[
+                    html.P('Aviation Accident Analysis by Day over the years', style=graph_heading_style),
+                    html.P('Pick the Day', style=cat_style),
+                    dcc.Dropdown(id='dropdown_day_bar', options=value_day_col, value=['Monday'], multi=True),
+                ], style={'display': 'none'}),
+                html.Div(id='b_4', children=[
+                    html.P('Aviation Accident Analysis by Injury Severity over the years', style=graph_heading_style),
+                    html.P('Pick the Injury Severity', style=cat_style),
+                    dcc.Dropdown(id='dropdown_sev_bar', options=value_sev_col, value=['Fatal'], multi=True),
+                ], style={'display': 'none'}),
+                html.Div(id='b_5', children=[
+                    html.P('Aviation Accident Analysis by Engine Type over the years', style=graph_heading_style),
+                    html.P('Pick the Engine Type', style=cat_style),
+                    dcc.Dropdown(id='dropdown_ety_bar', options=value_ety_col, value=['Reciprocating'], multi=True),
+                ], style={'display': 'none'}),
+                html.Div(id='b_6', children=[
+                    html.P('Aviation Accident Analysis by Weather Condition over the years', style=graph_heading_style),
+                    html.P('Pick the Weather Condition', style=cat_style),
+                    dcc.Dropdown(id='dropdown_weather_bar', options=value_weather_col, value=['IMC'], multi=True),
+                ], style={'display': 'none'}),
+                html.Div(id='b_7', children=[
+                    html.P('Aviation Accident Analysis by Amateur Built Aircraft over the years',
+                           style=graph_heading_style),
+                    html.P('Pick the Amateur Built', style=cat_style),
+                    dcc.Dropdown(id='dropdown_am_bar', options=value_am_col, value=['Yes'], multi=True),
+                ], style={'display': 'none'}),
+                html.Div(id='b_8', children=[
+                    html.P('Aviation Accident Analysis by Investigation Type over the years',
+                           style=graph_heading_style),
+                    html.P('Pick the Investigation Type', style=cat_style),
+                    dcc.Dropdown(id='dropdown_it_bar', options=value_it_col, value=['Accident'], multi=True),
+                ], style={'display': 'none'}),
+                html.Div(id='b_9', children=[
+                    html.P('Aviation Accident Analysis by Aircraft damage over the years', style=graph_heading_style),
+                    html.P('Pick the Aircraft damage', style=cat_style),
+                    dcc.Dropdown(id='dropdown_ad_bar', options=value_ad_col, value=['Destroyed'], multi=True),
+                ], style={'display': 'none'}),
+                html.Div(id='b_10', children=[
+                    html.P('Aviation Accident Analysis by Number of Engines in Aircraft over the years',
+                           style=graph_heading_style),
+                    html.P('Pick the Number of Engines', style=cat_style),
+                    dcc.Dropdown(id='dropdown_numo_bar', options=value_numo_col, value=['2'], multi=True),
+                ], style={'display': 'none'}),
+                dcc.Graph(id='my-graph2'),
+            ]),
+        ),
+    ],
+    style={'margin-top': '2.5%'},
+    className='bar-content',
+)
+
+pie_layout = html.Div(
+    children=[
+        html.P('Pie Chart', className='header-title-pie', style=heading_style),
+        html.Hr(),
+        dbc.Card(
+            dbc.CardBody([
+                html.P('Steps:', style=continent_style),
+                html.Ul(
+                    [
+                        html.Li("Pick a Category"),
+                        html.Li("Select a Date (This is imperative in order to get the result)"),
+                        html.Li(
+                            "Result might not show due to the time chosen (dataset does not exist for that particular time)"),
+                    ]
+                ),
+                html.Br(),
+                dbc.Row([
+                    dbc.Col([
+                        html.P('Pick the Category:', style=cat_style),
+                    ], width=2),
+                    dbc.Col([
+                        dcc.Dropdown(id='dropdown_col_pie', options=value_cat_col_1, value='Month', multi=False,
+                                     style={'width': '20vw'}),
+                    ], width=10),
+                ], align='center'),
+                html.Br(),
+                dbc.Row([
+                    dbc.Col([
+                        html.P('Select Date:', style=cat_style),
+                    ], width=2),
+                    dbc.Col([
+                        dcc.DatePickerRange(id='date_3',
+                                            min_date_allowed=date(1974, 1, 1),
+                                            max_date_allowed=date(2023, 1, 1)
+                                            ),
+                    ], width=10),
+                ], align='center'),
+                dcc.Graph(id='my-graph3'),
+            ]),
+        ),
+    ],
+    style={'margin-top': '2.5%'},
+    className='pie-content',
+)
+
+dis_layout = html.Div(
+    children=[
+        html.P('Displot', className='header-title-dis', style=heading_style),
+        html.Hr(),
+        dbc.Card(
+            dbc.CardBody([
+                html.P('Steps:', style=continent_style),
+                html.Ul(
+                    [
+                        html.Li("Pick an Incident you want to analyze"),
+                        html.Li("Select multiple aircraft sizes you are wanting to analyze"),
+                        html.Li("Pick a Category"),
+                        html.Li("Select a Date (This is imperative in order to get the result)"),
+                        html.Li(
+                            "Result might not show due to the time chosen (dataset does not exist for that particular time)"),
+                    ]
+                ),
+                html.Br(),
+                dbc.Row([
+                    dbc.Col([
+                        html.P('Pick the Incident:', style=continent_style),
+                    ], width=2),
+                    dbc.Col([
+                        dcc.Dropdown(id='dropdown_col_dis', options=dis_col, value='Total_Fatal_Injuries', multi=False,
+                                     style={'width': '20vw'}),
+                    ], width=10),
+                ], align='center'),
+                html.Br(),
+                dcc.Checklist(
+                    id='dis_check',
+                    options=dis_col_2_,
+                    value=dis_col_2,
+                    inline=True,
+                    labelStyle={'margin-right': '10px'}
+                ),
+                html.Br(),
+                dbc.Row([
+                    dbc.Col([
+                        html.P('Pick the Category:', style=continent_style),
+                    ], width=2),
+                    dbc.Col([
+                        dcc.Dropdown(id='dropdown_col_dis_2', options=value_cat_col_1, value='Amateur_Built',
+                                     multi=False,
+                                     style={'width': '20vw'}),
+                    ], width=10),
+                ], align='center'),
+                html.Br(),
+                dbc.Row([
+                    dbc.Col([
+                        html.P('Select Date:', style=cat_style),
+                    ], width=2),
+                    dbc.Col([
+                        dcc.DatePickerRange(id='date_4',
+                                            min_date_allowed=date(1974, 1, 1),
+                                            max_date_allowed=date(2023, 1, 1)
+                                            ),
+                    ], width=10),
+                ], align='center'),
+                dcc.Graph(id='my-graph4'),
+            ]),
+        ),
+    ],
+    style={'margin-top': '2.5%'},
+    className='dis-content',
+)
+
+kde_layout = html.Div(
+    children=[
+        html.P('KDE', className='header-title-kde', style=heading_style),
+        html.Hr(),
+        dbc.Card(
+            dbc.CardBody([
+                html.P('Steps:', style=continent_style),
+                html.Ul(
+                    [
+                        html.Li("Pick an Incident you want to analyze"),
+                        html.Li("Select multiple aircraft sizes you are wanting to analyze"),
+                        html.Li("Pick Hue (This will analyze other data points in your plot)"),
+                        html.Li("Select a Date (This is imperative in order to get the result)"),
+                        html.Li(
+                            "Result might not show due to the time chosen (dataset does not exist for that particular time)"),
+                    ]
+                ),
+                html.Br(),
+                dbc.Row([
+                    dbc.Col([
+                        html.P('Pick the Incident:', style=continent_style),
+                    ], width=2),
+                    dbc.Col([
+                        dcc.Dropdown(id='dropdown_col_kde', options=dis_col, value='Total_Fatal_Injuries', multi=False,
+                                     style={'width': '20vw'}),
+                    ], width=10),
+                ], align='center'),
+                html.Br(),
+                dcc.Checklist(
+                    id='kde_check',
+                    options=dis_col_2_,
+                    value=dis_col_2,
+                    inline=True,
+                    labelStyle={'margin-right': '10px'}
+                ),
+                html.Br(),
+                dbc.Row([
+                    dbc.Col([
+                        html.P('Hue:', style=continent_style),
+                    ], width=2),
+                    dbc.Col([
+                        dcc.Dropdown(id='dropdown_col_kde_2', options=cat_col_1, value='Total_Fatal_Injuries',
+                                     multi=False,
+                                     style={'width': '20vw'}),
+                    ], width=10),
+                ], align='center'),
+                html.Br(),
+                dbc.Row([
+                    dbc.Col([
+                        html.P('Select Date:', style=cat_style),
+                    ], width=2),
+                    dbc.Col([
+                        dcc.DatePickerRange(id='date_5',
+                                            min_date_allowed=date(1974, 1, 1),
+                                            max_date_allowed=date(2023, 1, 1)
+                                            ),
+                    ], width=10),
+                ], align='center'),
+                dcc.Graph(id='my-graph5'),
+            ]),
+        ),
+    ],
+    style={'margin-top': '2.5%'},
+    className='kde-content',
+)
+
+scatter_layout = html.Div(
+    children=[
+        html.P('Scatter Plot', className='header-title-scatter', style=heading_style),
+        html.Hr(),
+        dbc.Card(
+            dbc.CardBody([
+                html.P('Steps:', style=continent_style),
+                html.Ul(
+                    [
+                        html.Li("Pick an Incident you want to analyze"),
+                        html.Li("Pick an second Incident you want to analyze against the first"),
+                        html.Li("Select multiple aircraft sizes you are wanting to analyze"),
+                        html.Li("Pick Hue (This will analyze other data points in your plot)"),
+                        html.Li("Select a Date (This is imperative in order to get the result)"),
+                        html.Li(
+                            "Result might not show due to the time chosen (dataset does not exist for that particular time)"),
+                    ]
+                ),
+                html.Br(),
+                dbc.Row([
+                    dbc.Col([
+                        html.P('Pick the Incident:', style=continent_style),
+                    ], width=2),
+                    dbc.Col([
+                        dcc.Dropdown(id='dropdown_col_sc', options=dis_col, value='Total_Fatal_Injuries', multi=False,
+                                     style={'width': '20vw'}),
+                    ], width=10),
+                ], align='center'),
+                html.Br(),
+                dcc.Checklist(
+                    id='sc_check',
+                    options=dis_col_2_,
+                    value=dis_col_2,
+                    inline=True,
+                    labelStyle={'margin-right': '10px'}
+                ),
+                html.Br(),
+                dbc.Row([
+                    dbc.Col([
+                        html.P('Pick the Second Incident:', style=continent_style),
+                    ], width=2),
+                    dbc.Col([
+                        dcc.Dropdown(id='dropdown_col_sc_2', options=dis_col, value='Total_Fatal_Injuries', multi=False,
+                                     style={'width': '20vw'}),
+                    ], width=10),
+                ], align='center'),
+                html.Br(),
+                dbc.Row([
+                    dbc.Col([
+                        html.P('Hue:', style=continent_style),
+                    ], width=2),
+                    dbc.Col([
+                        dcc.Dropdown(id='dropdown_col_sc_3', options=cat_col_1, multi=False,
+                                     style={'width': '20vw'}),
+                    ], width=10),
+                ], align='center'),
+                html.Br(),
+                dbc.Row([
+                    dbc.Col([
+                        html.P('Select Date:', style=cat_style),
+                    ], width=2),
+                    dbc.Col([
+                        dcc.DatePickerRange(id='date_6',
+                                            min_date_allowed=date(1974, 1, 1),
+                                            max_date_allowed=date(2023, 1, 1)
+                                            ),
+                    ], width=10),
+                ], align='center'),
+                dcc.Graph(id='my-graph6'),
+            ]),
+        ),
+    ],
+    style={'margin-top': '2.5%'},
+    className='scatter-content',
+)
+
+box_layout = html.Div(
+    children=[
+        html.P('Box Plot', className='header-title-box', style=heading_style),
+        html.Hr(),
+        dbc.Card(
+            dbc.CardBody([
+                html.P('Steps:', style=continent_style),
+                html.Ul(
+                    [
+                        html.Li("Pick a Category"),
+                        html.Li("Select multiple aircraft sizes you are wanting to analyze"),
+                        html.Li("Pick an Incident you want to analyze"),
+                        html.Li("Pick Hue (This will analyze other data points in your plot)"),
+                        html.Li("Select a Date (This is imperative in order to get the result)"),
+                        html.Li(
+                            "Result might not show due to the time chosen (dataset does not exist for that particular time)"),
+                    ]
+                ),
+                html.Br(),
+                dbc.Row([
+                    dbc.Col([
+                        html.P('Pick the Category:', style=cat_style),
+                    ], width=2),
+                    dbc.Col([
+                        dcc.Dropdown(id='dropdown_col_bo', options=cat_col_1, value='Day', multi=False,
+                                     style={'width': '20vw'}),
+                    ], width=10),
+                ], align='center'),
+                html.Br(),
+                dcc.Checklist(
+                    id='bo_check',
+                    options=dis_col_2_,
+                    value=dis_col_2,
+                    inline=True,
+                    labelStyle={'margin-right': '10px'}
+                ),
+                html.Br(),
+                dbc.Row([
+                    dbc.Col([
+                        html.P('Pick the Incident:', style=cat_style),
+                    ], width=2),
+                    dbc.Col([
+                        dcc.Dropdown(id='dropdown_col_bo_2', options=dis_col, value='Total_Fatal_Injuries', multi=False,
+                                     style={'width': '20vw'}),
+                    ], width=10),
+                ], align='center'),
+                html.Br(),
+                dbc.Row([
+                    dbc.Col([
+                        html.P('Hue:', style=cat_style),
+                    ], width=2),
+                    dbc.Col([
+                        dcc.Dropdown(id='dropdown_col_bo_3', options=cat_col, multi=False,
+                                     style={'width': '20vw'}),
+                    ], width=10),
+                ], align='center'),
+                html.Br(),
+                dbc.Row([
+                    dbc.Col([
+                        html.P('Select Date:', style=cat_style),
+                    ], width=2),
+                    dbc.Col([
+                        dcc.DatePickerRange(id='date_7',
+                                            min_date_allowed=date(1974, 1, 1),
+                                            max_date_allowed=date(2023, 1, 1)
+                                            ),
+                    ], width=10),
+                ], align='center'),
+                dcc.Graph(id='my-graph7'),
+            ]),
+        ),
+    ],
+    style={'margin-top': '2.5%'},
+    className='box-content',
+)
+
+hist_layout = html.Div(
+    children=[
+        html.P('Histogram', className='header-title-hist', style=heading_style),
+        html.Hr(),
+        dbc.Card(
+            dbc.CardBody([
+                html.P('Steps:', style=continent_style),
+                html.Ul(
+                    [
+                        html.Li("Pick a Category"),
+                        html.Li("Select a Date (This is imperative in order to get the result)"),
+                        html.Li(
+                            "Result might not show due to the time chosen (dataset does not exist for that particular time)"),
+                        html.Li("Pick from the option display for that category"),
+                    ]
+                ),
+                html.Br(),
+                dbc.Row([
+                    dbc.Col([
+                        html.P('Pick the Category:', style=cat_style),
+                    ], width=2),
+                    dbc.Col([
+                        dcc.Dropdown(id='dropdown_col_h', options=value_cat_col, value='Country', multi=False,
+                                     style={'width': '20vw'}),
+                    ], width=10),
+                ], align='center'),
+                html.Br(),
+                dbc.Row([
+                    dbc.Col([
+                        html.P('Select Date:', style=cat_style),
+                    ], width=2),
+                    dbc.Col([
+                        dcc.DatePickerRange(id='date_8',
+                                            min_date_allowed=date(1974, 1, 1),
+                                            max_date_allowed=date(2023, 1, 1)
+                                            ),
+                    ], width=10),
+                ], align='center'),
+                html.Div(id='h_1', children=[
+                    html.P('Aviation Accident Analysis by Country over the years', style=graph_heading_style),
+                    html.P('Pick the Country or Ocean', style=cat_style),
+                    dcc.Dropdown(id='dropdown_country_h', options=value_country_col, value=['United States'],
+                                 multi=True),
+                ], style={'display': 'none'}),
+                html.Div(id='h_2', children=[
+                    html.P('Aviation Accident Analysis by Month over the years', style=graph_heading_style),
+                    html.P('Pick the Month', style=cat_style),
+                    dcc.Dropdown(id='dropdown_month_h', options=value_month_col, value=['January'], multi=True),
+                ], style={'display': 'none'}),
+                html.Div(id='h_3', children=[
+                    html.P('Aviation Accident Analysis by Day over the years', style=graph_heading_style),
+                    html.P('Pick the Day', style=cat_style),
+                    dcc.Dropdown(id='dropdown_day_h', options=value_day_col, value=['Monday'], multi=True),
+                ], style={'display': 'none'}),
+                html.Div(id='h_4', children=[
+                    html.P('Aviation Accident Analysis by Injury Severity over the years', style=graph_heading_style),
+                    html.P('Pick the Injury Severity', style=cat_style),
+                    dcc.Dropdown(id='dropdown_sev_h', options=value_sev_col, value=['Fatal'], multi=True),
+                ], style={'display': 'none'}),
+                html.Div(id='h_5', children=[
+                    html.P('Aviation Accident Analysis by Engine Type over the years', style=graph_heading_style),
+                    html.P('Pick the Engine Type', style=cat_style),
+                    dcc.Dropdown(id='dropdown_ety_h', options=value_ety_col, value=['Reciprocating'], multi=True),
+                ], style={'display': 'none'}),
+                html.Div(id='h_6', children=[
+                    html.P('Aviation Accident Analysis by Weather Condition over the years', style=graph_heading_style),
+                    html.P('Pick the Weather Condition', style=cat_style),
+                    dcc.Dropdown(id='dropdown_weather_h', options=value_weather_col, value=['IMC'], multi=True),
+                ], style={'display': 'none'}),
+                html.Div(id='h_7', children=[
+                    html.P('Aviation Accident Analysis by Amateur Built Aircraft over the years',
+                           style=graph_heading_style),
+                    html.P('Pick the Amateur Built', style=cat_style),
+                    dcc.Dropdown(id='dropdown_am_h', options=value_am_col, value=['Yes'], multi=True),
+                ], style={'display': 'none'}),
+                html.Div(id='h_8', children=[
+                    html.P('Aviation Accident Analysis by Investigation Type over the years',
+                           style=graph_heading_style),
+                    html.P('Pick the Investigation Type', style=cat_style),
+                    dcc.Dropdown(id='dropdown_it_h', options=value_it_col, value=['Accident'], multi=True),
+                ], style={'display': 'none'}),
+                html.Div(id='h_9', children=[
+                    html.P('Aviation Accident Analysis by Aircraft damage over the years', style=graph_heading_style),
+                    html.P('Pick the Aircraft damage', style=cat_style),
+                    dcc.Dropdown(id='dropdown_ad_h', options=value_ad_col, value=['Destroyed'], multi=True),
+                ], style={'display': 'none'}),
+                html.Div(id='h_10', children=[
+                    html.P('Aviation Accident Analysis by Number of Engines in Aircraft over the years',
+                           style=graph_heading_style),
+                    html.P('Pick the Number of Engines', style=cat_style),
+                    dcc.Dropdown(id='dropdown_numo_h', options=value_numo_col, value=['2'], multi=True),
+                ], style={'display': 'none'}),
+                dcc.Graph(id='my-graph8'),
+            ]),
+        ),
+    ],
+    style={'margin-top': '2.5%'},
+    className='hist-content',
+)
+
+pair_layout = html.Div(
+    children=[
+        html.P('Pair Plot', className='header-title-pair', style=heading_style),
+        html.Hr(),
+        dbc.Card(
+            dbc.CardBody([
+                html.P('Steps:', style=continent_style),
+                html.Ul(
+                    [
+                        html.Li("Pick a Category"),
+                        html.Li("Select a Date (This is imperative in order to get the result)"),
+                        html.Li(
+                            "Result might not show due to the time chosen (dataset does not exist for that particular time)"),
+                        html.Li("Set width you want for your graph (Default is already set to 1190)"),
+                        html.Li("Set height you want for your graph (Default is already set to 800)"),
+                    ]
+                ),
+                html.Br(),
+                dbc.Row([
+                    dbc.Col([
+                        html.P('Pick the Category:', style=cat_style),
+                    ], width=2),
+                    dbc.Col([
+                        dcc.Dropdown(id='dropdown_col_p', options=p_col, value='Total_Fatal_Injuries', multi=True),
+                    ], width=10),
+                ], align='center'),
+                html.Br(),
+                dbc.Row([
+                    dbc.Col([
+                        html.P('Select Date:', style=cat_style),
+                    ], width=2),
+                    dbc.Col([
+                        dcc.DatePickerRange(id='date_9',
+                                            min_date_allowed=date(1974, 1, 1),
+                                            max_date_allowed=date(2023, 1, 1)
+                                            ),
+                    ], width=10),
+                ], align='center'),
+                dbc.Row([
+                    dbc.Col([
+                        html.P('Width:', style=cat_style),
+                    ], width=2),
+                    dbc.Col([
+                        dcc.Input(
+                            id='width',
+                            type='number',
+                            value=1190,
+                            min=500,
+                            step=1
+                        ),
+                    ], width=10),
+                ], align='center'),
+                dbc.Row([
+                    dbc.Col([
+                        html.P('Height:', style=cat_style),
+                    ], width=2),
+                    dbc.Col([
+                        dcc.Input(
+                            id='height',
+                            type='number',
+                            value=800,
+                            min=500,
+                            step=1
+                        ),
+                    ], width=10),
+                ], align='center'),
+                dcc.Graph(id='my-graph9'),
+            ]),
+        ),
+    ],
+    style={'margin-top': '2.5%'},
+    className='pair-content',
+)
+
+heat_layout = html.Div(
+    children=[
+        html.P('Heat Map', className='header-title-heat', style=heading_style),
+        html.Hr(),
+        dbc.Card(
+            dbc.CardBody([
+                html.P('Steps:', style=continent_style),
+                html.Ul(
+                    [
+                        html.Li("Pick an Incident"),
+                        html.Li("Select a Date (This is imperative in order to get the result)"),
+                        html.Li(
+                            "Result might not show due to the time chosen (dataset does not exist for that particular time)"),
+                    ]
+                ),
+                html.Br(),
+                dbc.Row([
+                    dbc.Col([
+                        html.P('Pick the Incident:', style=cat_style),
+                    ], width=2),
+                    dbc.Col([
+                        dcc.Dropdown(id='dropdown_col_he', options=p_col,
+                                     value=['Total_Fatal_Injuries', 'Total_Serious_Injuries'],
+                                     multi=True),
+                    ], width=10),
+                ], align='center'),
+                html.Br(),
+                dbc.Row([
+                    dbc.Col([
+                        html.P('Select Date:', style=cat_style),
+                    ], width=2),
+                    dbc.Col([
+                        dcc.DatePickerRange(id='date_10',
+                                            min_date_allowed=date(1974, 1, 1),
+                                            max_date_allowed=date(2023, 1, 1)
+                                            ),
+                    ], width=10),
+                ], align='center'),
+                dcc.Graph(id='my-graph10'),
+            ]),
+        ),
+    ],
+    style={'margin-top': '2.5%'},
+    className='heat-content',
+)
+
+about_layout = html.Div(
+    children=[
+        html.P('About the Model', className='header-title-about', style=heading_style),
+        html.Hr(),
+        dbc.Card(
+            dbc.CardBody([
+                dbc.Row([
+                    dbc.Col([
+                        html.Img(src='assets/image1.png',
+                                 style={'width': '100%', 'border-radius': '10%', 'margin-right': '5%'}),
+                    ], width=5),
+                    dbc.Col([
+                        html.P('Aviation accidents pose significant risks to human life and the aviation industry. '
+                               'Understanding their causes and contributing factors is crucial for enhancing safety and '
+                               'preventing future incidents. This abstract provides an overview of aviation accident analysis, '
+                               'its importance, methods employed, and desired outcomes.',
+                               style={'margin-top': '4%',
+                                      'text-align': 'justify'}),
+                        html.P(
+                            'Aviation accident analysis involves systematic investigation to determine causes and contributing factors.'
+                            ' It employs methodologies such as accident scene investigation, data analysis, human factors'
+                            ' analysis, and simulation modeling. These approaches analyze technical malfunctions, human errors, '
+                            'environmental conditions, and organizational factors.',
+                            style={'text-align': 'justify'}),
+                    ], width=7),
+                ], align='center'),
+                dbc.Row([
+                    dbc.Col([
+                        html.P(
+                            'The primary goal of aviation accident analysis is to identify root causes and develop effective safety recommendations.'
+                            ' It enhances safety standards, improves operational procedures, and implements necessary changes. Insights '
+                            'gained help understand complex interactions between humans, technological systems, and organizations.'
+                            ' Valuable lessons learned lead to improved training programs, enhanced aircraft design, and regulatory enhancements.',
+                            style={'text-align': 'justify'}),
+                        html.P(
+                            'Accident analysis also contributes to safety research and the development of new technologies. '
+                            'It refines predictive models, establishes proactive safety measures, and improves safety regulations,'
+                            ' standards, and practices.',
+                            style={'text-align': 'justify'}),
+                    ], width=7),
+                    dbc.Col([
+                        html.Img(src='assets/image2.png',
+                                 style={'width': '100%', 'border-radius': '10%', 'margin-right': '5%'}),
+                    ], width=5),
+                ], align='center'),
+                dbc.Row([
+                    dbc.Col([
+                        html.Img(src='assets/image3.png',
+                                 style={'width': '100%', 'border-radius': '3%', 'margin-right': '5%'}),
+                    ], width=5),
+                    dbc.Col([
+                        html.P(
+                            'In conclusion, aviation accident analysis plays a critical role in enhancing safety. '
+                            'By investigating accidents, identifying root causes, and implementing safety recommendations,'
+                            ' it prevents future incidents and improves overall safety in the aviation industry. Continued investment '
+                            'in accident analysis research and collaboration between stakeholders is essential for ongoing improvement.',
+                            style={'text-align': 'justify'})
+                    ], width=7),
+                ], align='center'),
+
+            ]),
+        ),
+    ],
+    style={'margin-top': '2.5%'},
+    className='about-content',
+)
+
+
+@my_app.callback(Output("page-content", "children"), [Input("url", "pathname")])
+def render_page_content(pathname):
+    if pathname == "/":
+        return main_content
+    elif pathname == "/line":
+        return line_layout
+    elif pathname == "/bar":
+        return bar_layout
+    elif pathname == "/pie":
+        return pie_layout
+    elif pathname == "/displot":
+        return dis_layout
+    elif pathname == "/kde":
+        return kde_layout
+    elif pathname == "/scatter":
+        return scatter_layout
+    elif pathname == "/box":
+        return box_layout
+    elif pathname == "/histogram":
+        return hist_layout
+    elif pathname == "/pair":
+        return pair_layout
+    elif pathname == "/heat-map":
+        return heat_layout
+    elif pathname == "/about":
+        return about_layout
+    # If the user tries to reach a different page, return a 404 message
+    return html.Div(
+        [
+            html.H1("404: Not found", className="text-danger"),
+            html.Hr(),
+            html.P(f"The pathname {pathname} was not recognised..."),
+        ],
+        className="p-3 bg-light rounded-3",
+    )
 
 
 @my_app.callback(
@@ -690,7 +1402,12 @@ def update_line(col, country, month, day, sev, ety, weather, am, it, ad, numo, d
     grouped = filtered_df.groupby([col, 'Year']).size().reset_index(name='Count')
 
     # create a line plot using Plotly
-    fig = px.line(grouped, x='Year', y='Count', color=col, title=f'Aviation Accidents by {col} over the Years')
+    fig = px.line(grouped, x='Year', y='Count', color=col,
+                  title=f'Aviation Accidents by {col} over the Years').update_layout(
+        template='plotly_dark',
+        plot_bgcolor='rgba(0, 0, 0, 0)',
+        paper_bgcolor='rgba(0, 0, 0, 0)',
+    )
 
     if col == cat_col[0]:
         return block, none, none, none, none, none, none, none, none, none, fig
@@ -774,10 +1491,18 @@ def update_bar(col, plot, country, month, day, sev, ety, weather, am, it, ad, nu
     grouped = filtered_df.groupby([col, 'Year']).size().reset_index(name='Count')
     if plot == 'Time Series Stack Plot':
         fig = px.bar(grouped, x='Year', y='Count', color=col, barmode='stack',
-                     title=f'Aviation Accidents by {col} over the Years')
+                     title=f'Aviation Accidents by {col} over the Years').update_layout(
+            template='plotly_dark',
+            plot_bgcolor='rgba(0, 0, 0, 0)',
+            paper_bgcolor='rgba(0, 0, 0, 0)',
+        )
     else:
         fig = px.bar(grouped, x='Year', y='Count', color=col, barmode='group',
-                     title=f'Aviation Accidents by {col} over the Years')
+                     title=f'Aviation Accidents by {col} over the Years').update_layout(
+            template='plotly_dark',
+            plot_bgcolor='rgba(0, 0, 0, 0)',
+            paper_bgcolor='rgba(0, 0, 0, 0)',
+        )
 
     if col == cat_col[0]:
         return block, none, none, none, none, none, none, none, none, none, fig
@@ -818,7 +1543,11 @@ def update_pie(col, d1, d2):
     counts = df_3[col].value_counts().reset_index()
     counts.columns = [col, 'Count']
 
-    fig = px.pie(counts, values='Count', names=col, title=f'Pie Chart of the Distribution of {col}')
+    fig = px.pie(counts, values='Count', names=col, title=f'Pie Chart of the Distribution of {col}').update_layout(
+        template='plotly_dark',
+        plot_bgcolor='rgba(0, 0, 0, 0)',
+        paper_bgcolor='rgba(0, 0, 0, 0)',
+    )
 
     return [fig]
 
@@ -856,7 +1585,11 @@ def update_dis(col, check, col2, d1, d2):
         df_3 = df_3[df_3['Number_of_passengers'] < 20]
         df_3 = df_3[(df_3['Event_Date'] >= d1) & (df_3['Event_Date'] <= d2)]
 
-    fig = px.histogram(df_3, x=col, color=col2, nbins=10, title=f'Displot of {col} with {col2}')
+    fig = px.histogram(df_3, x=col, color=col2, nbins=10, title=f'Displot of {col} with {col2}').update_layout(
+        template='plotly_dark',
+        plot_bgcolor='rgba(0, 0, 0, 0)',
+        paper_bgcolor='rgba(0, 0, 0, 0)',
+    )
 
     return fig
 
@@ -894,7 +1627,11 @@ def update_kde(col, check, col2, d1, d2):
         df_3 = df_3[df_3['Number_of_passengers'] < 20]
         df_3 = df_3[(df_3['Event_Date'] >= d1) & (df_3['Event_Date'] <= d2)]
 
-    fig = px.density_contour(df_3, x=col, color=col2, title=f'KDE of {col} with {col2}')
+    fig = px.density_contour(df_3, x=col, color=col2, title=f'KDE of {col} with {col2}').update_layout(
+        template='plotly_dark',
+        plot_bgcolor='rgba(0, 0, 0, 0)',
+        paper_bgcolor='rgba(0, 0, 0, 0)',
+    )
 
     return fig
 
@@ -933,7 +1670,12 @@ def update_sc(col, check, col2, hue, d1, d2):
         df_3 = df_3[df_3['Number_of_passengers'] < 20]
         df_3 = df_3[(df_3['Event_Date'] >= d1) & (df_3['Event_Date'] <= d2)]
 
-    fig = px.scatter(df_3, x=col, y=col2, color=hue, trendline='ols', title=f'Scattered plot of {col} vs {col2} with {hue}')
+    fig = px.scatter(df_3, x=col, y=col2, color=hue, trendline='ols',
+                     title=f'Scattered plot of {col} vs {col2} with {hue}').update_layout(
+        template='plotly_dark',
+        plot_bgcolor='rgba(0, 0, 0, 0)',
+        paper_bgcolor='rgba(0, 0, 0, 0)',
+    )
 
     return fig
 
@@ -949,7 +1691,7 @@ def update_sc(col, check, col2, hue, d1, d2):
         Input(component_id='date_7', component_property='end_date')
     ]
 )
-def update_sc(col, check, col2, hue, d1, d2):
+def update_box(col, check, col2, hue, d1, d2):
     df_3 = df.copy()
     if 'Private Aircraft' in check and 'Chartered Aircraft' in check and 'Commercial Aircraft' in check:
         df_3 = df_3[(df_3['Event_Date'] >= d1) & (df_3['Event_Date'] <= d2)]
@@ -972,9 +1714,11 @@ def update_sc(col, check, col2, hue, d1, d2):
         df_3 = df_3[df_3['Number_of_passengers'] < 20]
         df_3 = df_3[(df_3['Event_Date'] >= d1) & (df_3['Event_Date'] <= d2)]
 
-    fig = px.box(df_3, x=col, y=col2, color=hue)
-    fig.update_layout(
+    fig = px.box(df_3, x=col, y=col2, color=hue).update_layout(
         title=f'Box Plot of {col} vs {col2} with {hue}',
+        template='plotly_dark',
+        plot_bgcolor='rgba(0, 0, 0, 0)',
+        paper_bgcolor='rgba(0, 0, 0, 0)',
     )
 
     return fig
@@ -1040,7 +1784,11 @@ def update_hist(col, country, month, day, sev, ety, weather, am, it, ad, numo, d
 
     # create a line plot using Plotly
     fig = px.histogram(grouped, x='Year', y='Count', color=col, marginal='violin',
-                       title=f'Aviation Accidents by {col} over the Years')
+                       title=f'Aviation Accidents by {col} over the Years').update_layout(
+        template='plotly_dark',
+        plot_bgcolor='rgba(0, 0, 0, 0)',
+        paper_bgcolor='rgba(0, 0, 0, 0)',
+    )
 
     if col == cat_col[0]:
         return block, none, none, none, none, none, none, none, none, none, fig
@@ -1078,12 +1826,14 @@ def update_pair(col, width, height, d1, d2):
     df_3 = df.copy()
     df_3 = df_3[(df_3['Event_Date'] >= d1) & (df_3['Event_Date'] <= d2)]
 
-    fig = px.scatter_matrix(df_3[col], title=f'Pair Plot between {col}')
-    fig.update_traces(diagonal_visible=False)
-    fig.update_layout(
+    fig = px.scatter_matrix(df_3[col], title=f'Pair Plot between {col}').update_layout(
+        template='plotly_dark',
+        plot_bgcolor='rgba(0, 0, 0, 0)',
+        paper_bgcolor='rgba(0, 0, 0, 0)',
         width=width,  # set the width of the plot
         height=height,  # set the height of the plot
     )
+    fig.update_traces(diagonal_visible=False)
 
     return fig
 
@@ -1102,7 +1852,11 @@ def update_heat(col, d1, d2):
 
     corr = df_3[col].corr()
 
-    fig = px.density_heatmap(corr, title=f'Density Heat Map between {col}')
+    fig = px.density_heatmap(corr, title=f'Density Heat Map between {col}').update_layout(
+        template='plotly_dark',
+        plot_bgcolor='rgba(0, 0, 0, 0)',
+        paper_bgcolor='rgba(0, 0, 0, 0)',
+    )
 
     return fig
 
